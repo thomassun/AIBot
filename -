@@ -1,0 +1,659 @@
+{
+  "log": {
+    "disabled": true,
+    "level": "debug",
+    "output": "/tmp/sing-box.log",
+    "timestamp": true
+  },
+  "dns": {
+    "servers": [
+      {
+        "type": "https",
+        "tag": "dns-netflix",
+        "detour": "netflix-native",
+        "domain_resolver": "dns_resolver",
+        "server": "1.1.1.1"
+      },
+      {
+        "type": "https",
+        "tag": "dns_proxy",
+        "detour": "select",
+        "domain_resolver": "dns_resolver",
+        "server": "1.1.1.1"
+      },
+      {
+        "type": "h3",
+        "tag": "dns_direct",
+        "detour": "direct",
+        "domain_resolver": "dns_resolver",
+        "server": "dns.alidns.com"
+      },
+      {
+        "type": "udp",
+        "tag": "dns_resolver",
+        "detour": "direct",
+        "server": "223.5.5.5"
+      }
+    ],
+    "rules": [
+      {
+        "outbound": "any",
+        "server": "dns_resolver"
+      },
+      {
+        "clash_mode": "direct",
+        "server": "dns_direct"
+      },
+      {
+        "clash_mode": "global",
+        "server": "dns_proxy"
+      },
+      {
+        "domain_suffix": [
+          "parallels.com",
+          "parallels.com.cdn.cloudflare.net",
+          "parallels.cn",
+          "parallels.de",
+          "parallels.es",
+          "parallels.fr",
+          "parallels.nl",
+          "parallels.pt",
+          "parallels.ru",
+          "parallelskorea.com",
+          "myparallels.com"
+        ],
+        "action": "predefined",
+        "rcode": "REFUSED"
+      },
+      {
+        "domain_suffix": [
+          "ftp.binance.com",
+          "developers.binance.com",
+          "emotn.com",
+          "keeflys.com",
+          "macked.app",
+          "longbridge.hk",
+          "github.com",
+          "garmin.com"
+        ],
+        "server": "dns_proxy"
+      },
+      {
+        "domain_suffix": [
+          "icloudnative.io",
+          "fuckcloudnative.io",
+          "sealos.io",
+          "cdn.jsdelivr.net",
+          "qq.com",
+          "iqiyi.com",
+          "tencent.com",
+          "binance.com",
+          "bnbstatic.com",
+          "binance.cloud"
+        ],
+        "server": "dns_direct"
+      },
+      {
+        "rule_set": "geosite-geolocation-!cn",
+        "server": "dns_proxy"
+      },
+      {
+        "rule_set": "Global",
+        "server": "dns_proxy"
+      },
+      {
+        "rule_set": [
+          "Netflix",
+          "geoip-netflix"
+        ],
+        "server": "dns-netflix"
+      },
+      {
+        "rule_set": [
+          "YouTube",
+          "Telegram",
+          "geoip-google",
+          "geoip-telegram",
+          "geoip-twitter"
+        ],
+        "server": "dns_proxy"
+      }
+    ],
+    "final": "dns_direct"
+  },
+  "ntp": {
+    "enabled": true,
+    "interval": "30m0s",
+    "server": "time.apple.com",
+    "server_port": 123,
+    "detour": "direct"
+  },
+  "inbounds": [
+    {
+      "type": "tun",
+      "interface_name": "sb-tun0",
+      "address": "198.168.1.1/16",
+      "auto_route": true,
+      "stack": "system"
+    }
+  ],
+  "outbounds": [
+    {
+      "type": "selector",
+      "tag": "select",
+      "outbounds": [
+        "rn",
+        "rnx",
+        "rn-hysteria2",
+        "rnx-hysteria2"
+      ]
+    },
+    {
+      "type": "selector",
+      "tag": "wrt",
+      "outbounds": [
+        "rn-wrt",
+        "rnx-wrt"
+      ]
+    },
+    {
+      "type": "selector",
+      "tag": "us-native",
+      "outbounds": [
+        "rn-warp",
+        "rnx-warp"
+      ]
+    },
+    {
+      "type": "selector",
+      "tag": "netflix-native",
+      "outbounds": [
+        "netflix-share"
+      ]
+    },
+    {
+      "type": "selector",
+      "tag": "hk",
+      "outbounds": [
+        "hk1"
+      ],
+      "default": "hk1"
+    },
+    {
+      "type": "selector",
+      "tag": "tiktok",
+      "outbounds": [
+        "rn"
+      ],
+      "default": "rn"
+    },
+    {
+      "type": "hysteria2",
+      "tag": "rn-hysteria2",
+      "tcp_fast_open": true,
+      "server": "rn.gobailia.uk",
+      "server_port": 8080,
+      "up_mbps": 200,
+      "down_mbps": 200,
+      "password": "zw0SbmDM258zFZaTRZIosA==",
+      "tls": {
+        "enabled": true,
+        "server_name": "rn.gobailia.uk"
+      }
+    },
+    {
+      "type": "hysteria2",
+      "tag": "rnx-hysteria2",
+      "tcp_fast_open": true,
+      "server": "rnx.gobailia.uk",
+      "server_port": 8080,
+      "up_mbps": 200,
+      "down_mbps": 200,
+      "password": "zw0SbmDM258zFZaTRZIosA==",
+      "tls": {
+        "enabled": true,
+        "server_name": "rnx.gobailia.uk"
+      }
+    },
+    {
+      "type": "vmess",
+      "tag": "hk1",
+      "tcp_fast_open": true,
+      "server": "q1.gobailia.uk",
+      "server_port": 443,
+      "uuid": "b718548b-9962-4f34-beab-77445a410e5a",
+      "security": "auto",
+      "network": "tcp",
+      "tls": {
+        "enabled": true,
+        "server_name": "q1.gobailia.uk"
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/shit",
+        "headers": {
+          "Host": "q1.gobailia.uk"
+        }
+      }
+    },
+    {
+      "type": "vmess",
+      "tag": "rn",
+      "tcp_fast_open": true,
+      "server": "rn.gobailia.uk",
+      "server_port": 4430,
+      "uuid": "b718548b-9962-4f34-beab-77445a410e5a",
+      "security": "auto",
+      "network": "tcp",
+      "tls": {
+        "enabled": true,
+        "server_name": "rn.gobailia.uk"
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/shit",
+        "headers": {
+          "Host": "rn.gobailia.uk"
+        }
+      }
+    },
+    {
+      "type": "vmess",
+      "tag": "rn-warp",
+      "tcp_fast_open": true,
+      "server": "rn.gobailia.uk",
+      "server_port": 4430,
+      "uuid": "b718548b-9962-4f34-beab-77445a410e5a",
+      "security": "auto",
+      "network": "tcp",
+      "tls": {
+        "enabled": true,
+        "server_name": "rn.gobailia.uk"
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/warp",
+        "headers": {
+          "Host": "rn.gobailia.uk"
+        }
+      }
+    },
+    {
+      "type": "vmess",
+      "tag": "rnx",
+      "tcp_fast_open": true,
+      "server": "rnx.gobailia.uk",
+      "server_port": 443,
+      "uuid": "b718548b-9962-4f34-beab-77445a410e5a",
+      "security": "auto",
+      "network": "tcp",
+      "tls": {
+        "enabled": true,
+        "server_name": "rnx.gobailia.uk"
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/shit",
+        "headers": {
+          "Host": "rnx.gobailia.uk"
+        }
+      }
+    },
+    {
+      "type": "vmess",
+      "tag": "rnx-warp",
+      "tcp_fast_open": true,
+      "server": "rnx.gobailia.uk",
+      "server_port": 443,
+      "uuid": "b718548b-9962-4f34-beab-77445a410e5a",
+      "security": "auto",
+      "network": "tcp",
+      "tls": {
+        "enabled": true,
+        "server_name": "rnx.gobailia.uk"
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/warp",
+        "headers": {
+          "Host": "rnx.gobailia.uk"
+        }
+      }
+    },
+    {
+      "type": "vmess",
+      "tag": "rn-wrt",
+      "tcp_fast_open": true,
+      "server": "rn.gobailia.uk",
+      "server_port": 8081,
+      "uuid": "b718548b-9962-4f34-beab-77445a410e5a",
+      "security": "auto",
+      "network": "tcp",
+      "tls": {
+        "enabled": true,
+        "server_name": "rn.gobailia.uk"
+      }
+    },
+    {
+      "type": "vmess",
+      "tag": "rnx-wrt",
+      "tcp_fast_open": true,
+      "server": "rnx.gobailia.uk",
+      "server_port": 8081,
+      "uuid": "b718548b-9962-4f34-beab-77445a410e5a",
+      "security": "auto",
+      "network": "tcp",
+      "tls": {
+        "enabled": true,
+        "server_name": "rnx.gobailia.uk"
+      }
+    },
+    {
+      "type": "vless",
+      "tag": "netflix-share",
+      "tcp_fast_open": true,
+      "server": "213.35.115.197",
+      "server_port": 8443,
+      "uuid": "5072d781-76d3-4b92-a7a6-4223e127f746",
+      "flow": "xtls-rprx-vision",
+      "network": "tcp",
+      "tls": {
+        "enabled": true,
+        "server_name": "yahoo.com",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        },
+        "reality": {
+          "enabled": true,
+          "public_key": "HYqdp6coZSGpKJbii3m3HF0SlGe6Y2-wItIkQUIAnXg",
+          "short_id": "8dd34e"
+        }
+      }
+    },
+    {
+      "type": "direct",
+      "tag": "direct"
+    }
+  ],
+  "route": {
+    "rules": [
+      {
+        "action": "sniff"
+      },
+      {
+        "protocol": "dns",
+        "action": "hijack-dns"
+      },
+      {
+        "clash_mode": "direct",
+        "outbound": "direct"
+      },
+      {
+        "clash_mode": "global",
+        "outbound": "select"
+      },
+      {
+        "type": "logical",
+        "mode": "or",
+        "rules": [
+          {
+            "type": "logical",
+            "mode": "and",
+            "rules": [
+              {
+                "port": 8123
+              },
+              {
+                "ip_cidr": "192.168.1.11/24"
+              }
+            ]
+          },
+          {
+            "type": "logical",
+            "mode": "and",
+            "rules": [
+              {
+                "port": 21064
+              },
+              {
+                "ip_cidr": "192.168.1.11/24"
+              }
+            ]
+          },
+          {
+            "type": "logical",
+            "mode": "and",
+            "rules": [
+              {
+                "port": 80
+              },
+              {
+                "ip_cidr": "192.168.1.11/24"
+              }
+            ]
+          }
+        ],
+        "outbound": "wrt"
+      },
+      {
+        "process_name": "/usr/bin/qbittorrent-nox",
+        "outbound": "direct"
+      },
+      {
+        "process_path": "/usr/bin/qbittorrent-nox",
+        "outbound": "direct"
+      },
+      {
+        "protocol": "quic",
+        "action": "reject"
+      },
+      {
+        "rule_set": [
+          "WeChat",
+          "Bilibili"
+        ],
+        "outbound": "direct"
+      },
+      {
+        "rule_set": "OpenAI",
+        "outbound": "us-native"
+      },
+      {
+        "domain_suffix": "longbridge.hk",
+        "outbound": "hk"
+      },
+      {
+        "domain_suffix": [
+          "bard.google.com",
+          "aistudio.google.com",
+          "clients6.google.com",
+          "claude.ai",
+          "anthropic.com",
+          "bing.com",
+          "copilot.microsoft.com",
+          "googleapis.com"
+        ],
+        "outbound": "us-native"
+      },
+      {
+        "package_name": "com.openai.chatgpt",
+        "outbound": "us-native"
+      },
+      {
+        "rule_set": [
+          "Netflix",
+          "geoip-netflix"
+        ],
+        "outbound": "netflix-native"
+      },
+      {
+        "rule_set": "TikTok",
+        "outbound": "tiktok"
+      },
+      {
+        "domain_suffix": [
+          "developers.binance.com",
+          "depay.one",
+          "orbstack.dev",
+          "emotn.com",
+          "keeflys.com",
+          "macked.app",
+          "garmin.com",
+          "github.com",
+          "gobailia.uk"
+        ],
+        "outbound": "select"
+      },
+      {
+        "domain": "accounts.google.com",
+        "domain_suffix": [
+          "sourceforge.net",
+          "fhjasokiwq.com"
+        ],
+        "outbound": "select"
+      },
+      {
+        "domain_suffix": "cloud.sealos.io",
+        "outbound": "direct"
+      },
+      {
+        "type": "logical",
+        "mode": "and",
+        "rules": [
+          {
+            "rule_set": "geosite-geolocation-!cn"
+          },
+          {
+            "rule_set": "geoip-cn",
+            "invert": true
+          }
+        ],
+        "outbound": "select"
+      },
+      {
+        "rule_set": "Global",
+        "outbound": "select"
+      },
+      {
+        "rule_set": "geoip-cn",
+        "outbound": "direct"
+      },
+      {
+        "ip_is_private": true,
+        "outbound": "direct"
+      },
+      {
+        "rule_set": [
+          "YouTube",
+          "Telegram",
+          "geoip-google",
+          "geoip-telegram",
+          "geoip-twitter"
+        ],
+        "outbound": "select"
+      }
+    ],
+    "rule_set": [
+      {
+        "type": "remote",
+        "tag": "geosite-geolocation-!cn",
+        "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-geolocation-!cn.srs",
+        "download_detour": "select"
+      },
+      {
+        "type": "remote",
+        "tag": "geoip-cn",
+        "url": "https://github.com/Yuu518/sing-box-rules/raw/refs/heads/rule_set/rule_set_ip/cn.srs",
+        "download_detour": "select"
+      },
+      {
+        "type": "remote",
+        "tag": "geoip-google",
+        "url": "https://github.com/Yuu518/sing-box-rules/raw/refs/heads/rule_set/rule_set_ip/google.srs",
+        "download_detour": "select"
+      },
+      {
+        "type": "remote",
+        "tag": "geoip-telegram",
+        "url": "https://github.com/Yuu518/sing-box-rules/raw/refs/heads/rule_set/rule_set_ip/telegram.srs",
+        "download_detour": "select"
+      },
+      {
+        "type": "remote",
+        "tag": "geoip-twitter",
+        "url": "https://github.com/Yuu518/sing-box-rules/raw/refs/heads/rule_set/rule_set_ip/twitter.srs",
+        "download_detour": "select"
+      },
+      {
+        "type": "remote",
+        "tag": "geoip-netflix",
+        "url": "https://github.com/Yuu518/sing-box-rules/raw/refs/heads/rule_set/rule_set_ip/netflix.srs",
+        "download_detour": "select"
+      },
+      {
+        "type": "remote",
+        "tag": "Global",
+        "url": "https://raw.githubusercontent.com/yangchuansheng/sing-box-geosite/main/rule/Global.json",
+        "download_detour": "select"
+      },
+      {
+        "type": "remote",
+        "tag": "YouTube",
+        "url": "https://raw.githubusercontent.com/yangchuansheng/sing-box-geosite/main/rule/YouTube.json",
+        "download_detour": "select"
+      },
+      {
+        "type": "remote",
+        "tag": "OpenAI",
+        "url": "https://raw.githubusercontent.com/yangchuansheng/sing-box-geosite/main/rule/OpenAI.json",
+        "download_detour": "select"
+      },
+      {
+        "type": "remote",
+        "tag": "TikTok",
+        "url": "https://raw.githubusercontent.com/yangchuansheng/sing-box-geosite/main/rule/TikTok.json",
+        "download_detour": "select"
+      },
+      {
+        "type": "remote",
+        "tag": "Telegram",
+        "url": "https://raw.githubusercontent.com/yangchuansheng/sing-box-geosite/main/rule/Telegram.json",
+        "download_detour": "select"
+      },
+      {
+        "type": "remote",
+        "tag": "Netflix",
+        "url": "https://raw.githubusercontent.com/yangchuansheng/sing-box-geosite/main/rule/Netflix.json",
+        "download_detour": "select"
+      },
+      {
+        "type": "remote",
+        "tag": "WeChat",
+        "url": "https://raw.githubusercontent.com/yangchuansheng/sing-box-geosite/main/rule/WeChat.json",
+        "download_detour": "select"
+      },
+      {
+        "type": "remote",
+        "tag": "Bilibili",
+        "url": "https://raw.githubusercontent.com/yangchuansheng/sing-box-geosite/main/rule/Bilibili.json",
+        "download_detour": "select"
+      }
+    ],
+    "final": "direct",
+    "find_process": true,
+    "auto_detect_interface": true
+  },
+  "experimental": {
+    "cache_file": {
+      "enabled": true
+    },
+    "clash_api": {
+      "external_controller": "127.0.0.1:9090",
+      "external_ui": "metacubexd",
+      "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
+      "external_ui_download_detour": "select",
+      "default_mode": "rule"
+    }
+  }
+}

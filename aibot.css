@@ -1,0 +1,10 @@
+HorizontalGroup {
+    height: 3;
+    align: center middle;
+}
+Asking Input {
+    width: 1fr;
+}
+Asking Button {
+    width: auto;
+}

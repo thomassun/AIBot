@@ -1,0 +1,19 @@
+[project]
+name = "aibot"
+version = "0.1.0"
+description = ""
+authors = [{ name = "thomas.sun", email = "sguoqing@gmail.com" }]
+readme = "README.md"
+requires-python = ">=3.9,<4.0.0"
+dependencies = [
+    "google-genai (>=1.24.0,<2.0.0)",
+    "playsound3 (>=3.2.4,<4.0.0)",
+    "textual",
+    "textual-dev (>=1.7.0,<2.0.0)",
+    "poetry-core (>=2.1.3,<3.0.0)",
+]
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
