@@ -44,8 +44,7 @@ class Bott(Static):
                 )
             )
         data = responses.candidates[0].content.parts[0].inline_data.data
-        file_name = 'out.wav'
-        wave_file(file_name, data)
+        play_obj = sa.play_buffer(data, 2,2,44100)
     async def user_input(self, a: Input):
         ans = ''
         log = self.app.query_one("#text", RichLog)
