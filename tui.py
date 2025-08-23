@@ -22,7 +22,7 @@ class Asking(HorizontalGroup):
     async def user_input_submitted(self, message: Input.Submitted):
         question = message.value.strip()
         message.input.clear()
-        message.input.placeholder = "Thinking..."
+        message.input.placeholder = "Thinking...."
         message.input.disabled = True
 
         log = self.app.query_one("#text", RichLog)
