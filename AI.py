@@ -1,5 +1,4 @@
 from http.client import responses
-
 from rich.box import MARKDOWN
 from textual import on
 from textual.app import App, ComposeResult
@@ -9,8 +8,10 @@ from rich.text import Text
 from rich.markdown import Markdown
 import asyncio
 import time
-import simpleaudio as sa
+#import simpleaudio as sa
 import wave
+import os
+import msvcrt
 from google import genai
 from google.genai import types
 import wave
@@ -44,7 +45,9 @@ class Bott(Static):
                 )
             )
         data = responses.candidates[0].content.parts[0].inline_data.data
-        play_obj = sa.play_buffer(data, 1,2,24000)
+        play_obj = sa.play_buffer(data, 2,2,44100)
+        async if msvcrt.getch():
+            play_obj.stop()
     async def user_input(self, a: Input):
         ans = ''
         log = self.app.query_one("#text", RichLog)
